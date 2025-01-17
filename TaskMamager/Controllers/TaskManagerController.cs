@@ -180,10 +180,17 @@ namespace TaskMamager.Controllers
 
             try
             {
+                
+                
                 var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
+                foreach(var u in User.Claims)
+                {
+                    Console.WriteLine(u);
+                }
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
+                    Console.WriteLine(user.userId);
                     if (user.userId == userId)
                     {
                         List<getTasksDto> tasks = await Tasks.getAllTasks(userId);

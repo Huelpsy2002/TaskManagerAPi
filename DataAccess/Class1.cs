@@ -29,16 +29,23 @@ namespace DataAccessLayer
                 SqlDataReader reader = await command.ExecuteReaderAsync();
                 if (reader.HasRows)
                 {
-                    string title, description, status;
-                    int categoryId;
+                  
                     while (await reader.ReadAsync())
                     {
-                        title = (string)reader["title"];
-                        description = (string)reader["Description"];
-                        status = (string)reader["Status"];
-                        categoryId = (int)reader["CategoryId"];
+                        
                         Tasks.Add(
-                            new Data.getTasksDto(title, description, status, categoryId)
+                            new Data.getTasksDto(
+                                
+                                taskId:(int)reader["TaskId"],
+                                title : (string)reader["title"],
+                                description: (string)reader["Description"],
+                                status: (string)reader["Status"],
+                                catgeory: (string)reader["CategoryName"]
+
+                                
+
+
+                                )
                             );
 
                     }

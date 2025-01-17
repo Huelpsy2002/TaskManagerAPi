@@ -63,7 +63,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
             options.RequireHttpsMetadata = false;
-            options.Audience = "Audience";
+            options.Audience = Environment.GetEnvironmentVariable("Audience");
             options.Authority = "https://localhost:7255";
             options.TokenValidationParameters = new TokenValidationParameters
             {
@@ -72,9 +72,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer ="Issuer",
-                ValidAudience = "Audience",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey1234567897838823921ujcfsdjd"))
+                ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
+                ValidAudience = Environment.GetEnvironmentVariable("Audience"),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Key")))
             };
             options.Events = new JwtBearerEvents
             {

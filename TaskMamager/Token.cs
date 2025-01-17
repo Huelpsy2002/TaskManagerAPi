@@ -23,12 +23,12 @@ namespace TaskMamager
             new Claim(ClaimTypes.Name, username)
         };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey1234567897838823921ujcfsdjd"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Key")));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "Issuer",
-                audience: "Audience",
+                issuer: Environment.GetEnvironmentVariable("Issuer"),
+                audience: Environment.GetEnvironmentVariable("Audience"),
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials);

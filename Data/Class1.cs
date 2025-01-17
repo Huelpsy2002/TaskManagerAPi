@@ -205,18 +205,21 @@ namespace Data
     public class getTasksDto
     {
 
+
+        public int taskId { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public string status { get; set; }
-        public int catgeoryId { get; set; }
+        public string catgeory { get; set; }
 
-        public getTasksDto(string title, string description, string status, int catgoryId)
+
+        public getTasksDto(int taskId , string title, string description, string status, string catgeory)
         {
-
+            this.taskId = taskId;
             this.title = title;
             this.description = description;
             this.status = status;
-            this.catgeoryId = catgeoryId;
+            this.catgeory = catgeory;
         }
 
 
