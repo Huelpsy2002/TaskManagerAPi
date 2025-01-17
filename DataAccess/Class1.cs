@@ -40,7 +40,9 @@ namespace DataAccessLayer
                                 title : (string)reader["title"],
                                 description: (string)reader["Description"],
                                 status: (string)reader["Status"],
-                                catgeory: (string)reader["CategoryName"]
+                                catgeory: (string)reader["CategoryName"],
+                                createdAt: (DateTime)reader["createdAt"],
+                                updatedAt: (DateTime)reader["updatedAt"]
 
                                 
 
@@ -65,7 +67,68 @@ namespace DataAccessLayer
             return Tasks;
         }
 
-        public static async Task<addTaskdDto?> addTask(addTaskdDto addTaskdDto)
+
+
+
+        public static async Task<getTasksDto>getTask(int userId,int taskId)
+        {
+
+
+
+
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand("getTask", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@taskId", taskId);
+
+            getTasksDto task = null;
+            try
+            {
+                await connection.OpenAsync();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+
+                    while (await reader.ReadAsync())
+                    {
+
+
+                        task = new Data.getTasksDto(
+
+                              taskId: (int)reader["TaskId"],
+                              title: (string)reader["title"],
+                              description: (string)reader["Description"],
+                              status: (string)reader["Status"],
+                              catgeory: (string)reader["CategoryName"],
+                              createdAt: (DateTime)reader["createdAt"],
+                              updatedAt: (DateTime)reader["updatedAt"]
+
+
+
+
+                              );
+                            
+
+                    }
+                }
+
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return task;
+        }
+
+        public static async Task<getTasksDto?> addTask(int userId,addTaskdDto addTaskdDto)
         {
 
 
@@ -75,23 +138,20 @@ namespace DataAccessLayer
             command.Parameters.AddWithValue("@title", addTaskdDto.title);
             command.Parameters.AddWithValue("@descreption", addTaskdDto.description);
             command.Parameters.AddWithValue("@categoryId", addTaskdDto.catgeoryId);
-            command.Parameters.AddWithValue("@UserId", addTaskdDto.userId);
+            command.Parameters.AddWithValue("@UserId", userId);
 
             var taskIdParam = new SqlParameter("@TaskId", SqlDbType.Int) { Direction = ParameterDirection.Output };
-            var createdAtParam = new SqlParameter("@CreatedAt", SqlDbType.DateTime) { Direction = ParameterDirection.Output };
             command.Parameters.Add(taskIdParam);
-            command.Parameters.Add(createdAtParam);
 
             bool excuted = false;
-
+            getTasksDto task = null;
             try
             {
                 await connection.OpenAsync();
                 int rowEfectted = await command.ExecuteNonQueryAsync();
                 if (rowEfectted > 0)
                 {
-                    addTaskdDto.taskId = (int)taskIdParam.Value;
-                    addTaskdDto.createdAt = (DateTime)createdAtParam.Value;
+                    task = await getTask(userId, (int)taskIdParam.Value);
                     excuted = true;
 
                 }
@@ -109,13 +169,13 @@ namespace DataAccessLayer
                 connection.Close();
             }
 
-            return excuted == true ? addTaskdDto : null;
+            return excuted == true ? task : null;
 
         }
 
 
 
-        public static async Task<updateTaskDto?> updateTask(updateTaskDto updatetaskdto)
+        public static async Task<getTasksDto?> updateTask(int userId,updateTaskDto updatetaskdto)
         {
 
 
@@ -123,24 +183,23 @@ namespace DataAccessLayer
             SqlCommand command = new SqlCommand("updateTask", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@title", updatetaskdto.title);
+            command.Parameters.AddWithValue("@taskId", updatetaskdto.taskId);
             command.Parameters.AddWithValue("@descreption", updatetaskdto.description);
             command.Parameters.AddWithValue("@categoryId", updatetaskdto.catgeoryId);
-            command.Parameters.AddWithValue("@UserId", updatetaskdto.userId);
+            command.Parameters.AddWithValue("@UserId", userId);
             command.Parameters.AddWithValue("@status", updatetaskdto.status);
 
-            var updatedAtParam = new SqlParameter("@updatedAt", SqlDbType.DateTime) { Direction = ParameterDirection.Output };
-            command.Parameters.Add(updatedAtParam);
+            
 
             bool excuted = false;
-
+            getTasksDto task = null;
             try
             {
                 await connection.OpenAsync();
                 int rowEfectted = await command.ExecuteNonQueryAsync();
                 if (rowEfectted > 0)
                 {
-
-                    updatetaskdto.updatedAt = (DateTime)updatedAtParam.Value;
+                    task = await getTask(userId, updatetaskdto.taskId);
                     excuted = true;
 
                 }
@@ -158,12 +217,12 @@ namespace DataAccessLayer
                 connection.Close();
             }
 
-            return excuted == true ? updatetaskdto : null;
+            return excuted == true ? task : null;
 
         }
 
 
-        public static async Task<bool> deleteTask(int taskId,int userId)
+        public static async Task<bool> deleteTask(int userId,int taskId)
         {
 
 

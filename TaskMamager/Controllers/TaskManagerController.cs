@@ -79,7 +79,7 @@ namespace TaskMamager.Controllers
            
             try
             {
-                var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
+                var username = User.FindFirst("sub")?.Value;// get the username of the logged user
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
@@ -125,7 +125,7 @@ namespace TaskMamager.Controllers
             try
             {
 
-                var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
+                var username = User.FindFirst("sub")?.Value;// get the username of the logged user
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
@@ -182,15 +182,13 @@ namespace TaskMamager.Controllers
             {
                 
                 
-                var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
-                foreach(var u in User.Claims)
-                {
-                    Console.WriteLine(u);
-                }
+                var username = User.FindFirst("sub")?.Value;// get the username of the logged user
+               
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
-                    Console.WriteLine(user.userId);
+                    
+                    Console.WriteLine(username);
                     if (user.userId == userId)
                     {
                         List<getTasksDto> tasks = await Tasks.getAllTasks(userId);
@@ -223,20 +221,20 @@ namespace TaskMamager.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<addTaskdDto>>addTask(int userId, addTaskdDto addtaskdto)
+        public async Task<ActionResult<getTasksDto>>addTask(int userId, addTaskdDto addtaskdto)
         {
 
             
             try
             {
 
-                var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
+                var username = User.FindFirst("sub")?.Value;// get the username of the logged user
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
-                    if (user.userId == addtaskdto.userId && user.userId==userId)
+                    if (user.userId==userId)
                     {
-                        var task = await Tasks.addTask(addtaskdto);
+                        var task = await Tasks.addTask(userId,addtaskdto);
 
                         return Ok(task);
                     }
@@ -270,19 +268,19 @@ namespace TaskMamager.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<updateTaskDto>> updateTask(int userId,updateTaskDto updatetaskdto)
+        public async Task<ActionResult<getTasksDto>> updateTask(int userId,updateTaskDto updatetaskdto)
         {
 
             
             try
             {
-                var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
+                var username = User.FindFirst("sub")?.Value;// get the username of the logged user
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
-                    if (user.userId == updatetaskdto.userId && user.userId==userId)
+                    if (user.userId==userId)
                     {
-                        var task = await Tasks.updateTask(updatetaskdto);
+                        var task = await Tasks.updateTask(userId,updatetaskdto);
 
                         return Ok(task);
                     }
@@ -326,13 +324,13 @@ namespace TaskMamager.Controllers
             {
 
 
-                var username = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;// get the username of the logged user
+                var username = User.FindFirst("sub")?.Value;// get the username of the logged user
                 getUserDto user = await Users.getUser(username);
                 if (user != null)
                 {
-                    if (user.userId == deletetaskdto.userId && user.userId == userId)
+                    if (user.userId == userId)
                     {
-                        if (await Tasks.deleteTask(deletetaskdto))
+                        if (await Tasks.deleteTask(userId,deletetaskdto))
                         {
                             return Ok(new { message = "task deleted successfully" });
                         }

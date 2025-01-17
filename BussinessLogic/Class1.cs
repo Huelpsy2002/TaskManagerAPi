@@ -175,13 +175,13 @@ namespace BussinessLogic
             }
         }
 
-        public static async Task<addTaskdDto?> addTask(addTaskdDto addtaskdto)
+        public static async Task<getTasksDto?> addTask(int userId,addTaskdDto addtaskdto)
         {
             try
             {
                 TaskValidation.validate(addtaskdto);
 
-                var newtask = await DataAccess.addTask(addtaskdto);
+                var newtask = await DataAccess.addTask( userId,addtaskdto);
                 if (newtask != null)
                 {
                     return newtask;
@@ -202,13 +202,13 @@ namespace BussinessLogic
 
         }
 
-        public static async Task<updateTaskDto?> updateTask(updateTaskDto updatetaskdto)
+        public static async Task<getTasksDto?> updateTask(int userId,updateTaskDto updatetaskdto)
         {
             try
             {
                 TaskValidation.validate(updatetaskdto);
 
-                var updatedTask = await DataAccess.updateTask(updatetaskdto);
+                var updatedTask = await DataAccess.updateTask(userId,updatetaskdto);
                 if (updatedTask != null)
                 {
                     return updatedTask;
@@ -228,13 +228,13 @@ namespace BussinessLogic
 
 
         }
-        public static async Task<bool> deleteTask(deleteTaskDto deletetaskdto)
+        public static async Task<bool> deleteTask(int userId,deleteTaskDto deletetaskdto)
         {
             bool deleted = false;
             try
             {
                 TaskValidation.validate(deletetaskdto);
-                deleted = await DataAccess.deleteTask(deletetaskdto.taskId,deletetaskdto.userId);
+                deleted = await DataAccess.deleteTask(userId,deletetaskdto.taskId);
                 deleted = true;
             }
             catch(InvalidDataException err)

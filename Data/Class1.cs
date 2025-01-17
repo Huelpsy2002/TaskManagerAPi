@@ -211,40 +211,38 @@ namespace Data
         public string description { get; set; }
         public string status { get; set; }
         public string catgeory { get; set; }
+        public DateTime updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
 
-
-        public getTasksDto(int taskId , string title, string description, string status, string catgeory)
+        public getTasksDto(int taskId , string title, string description, string status, string catgeory ,DateTime createdAt,DateTime updatedAt)
         {
             this.taskId = taskId;
             this.title = title;
             this.description = description;
             this.status = status;
             this.catgeory = catgeory;
+            this.updatedAt = updatedAt;
+            this.createdAt = createdAt;
         }
 
 
     }
     public class addTaskdDto
     {
-        public int taskId { get; set; }
-        public int userId { get; set; }
+        
         public string title { get; set; }
         public string description { get; set; }
-        public string status { get; set; }
         public int catgeoryId { get; set; }
-        public DateTime createdAt { get; set; }
 
 
         public addTaskdDto() { }
-        public addTaskdDto(int taskId, int userId, string title, string description, string status, int catgoryId, DateTime createdAt)
+        public addTaskdDto( string title, string description,  int catgoryId)
         {
-            this.userId = userId;
-            this.taskId = taskId;
+           
             this.title = title;
             this.description = description;
-            this.status = status;
             this.catgeoryId = catgeoryId;
-            this.createdAt = createdAt;
+            
         }
 
 
@@ -252,24 +250,22 @@ namespace Data
     public class updateTaskDto
     {
         public int taskId { get; set; }
-        public int userId { get; set; }
+       
         public string title { get; set; }
         public string description { get; set; }
         public string status { get; set; }
         public int catgeoryId { get; set; }
 
-        public DateTime updatedAt { get; set; }
+       
 
         public updateTaskDto() { }
-        public updateTaskDto(int taskId, int userId, string title, string description, string status, int catgoryId, DateTime updatedAt)
+        public updateTaskDto(int taskId, string title, string description, string status, int catgoryId)
         {
-            this.userId = userId;
             this.taskId = taskId;
             this.title = title;
             this.description = description;
             this.status = status;
             this.catgeoryId = catgeoryId;
-            this.updatedAt = updatedAt;
         }
 
 
@@ -278,12 +274,11 @@ namespace Data
     public class deleteTaskDto
     {
         public int taskId { get; set; }
-        public int userId { get; set; }
+      
         public deleteTaskDto() { }
-        public deleteTaskDto(int taskId,int userId)
+        public deleteTaskDto(int taskId)
         {
             this.taskId = taskId;
-            this.userId = userId;
         }
     }
 
